@@ -18,8 +18,8 @@ Assesment Creation
 
 FOLDER STRUCTURE:
 /job-portal
-├── public/
-│   └── index.html
+├── index.html
+│   
 ├── src/
 │   ├── api/                # API layer (wrappers for fetch/msw calls)
 │   │   └── jobsApi.js
@@ -53,9 +53,6 @@ FOLDER STRUCTURE:
 │   │   ├── AssessmentCreation.jsx
 │   │   ├── CandidatesKanban.jsx
 │   │   └── HRDashboard.jsx
-│
-│   ├── routes/             # React Router v6 setup
-│   │   └── index.jsx
 │
 │   ├── styles/             # Tailwind config extensions / global css
 │   │   └── index.css

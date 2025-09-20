@@ -1,8 +1,8 @@
-import AssessmentCreation from "./pages/AssessmentCreation.jsx";
-import CandidatesKanban from "./pages/CandidatesKanban.jsx";
-import HRDashboard from "./pages/HRDashboard.jsx";
-import JobsListing from "./pages/JobsListing.jsx";
-import LandingPage from "./pages/LandingPage.jsx";
+import AssessmentCreation from "../pages/AssessmentCreation.jsx";
+import CandidatesKanban from "../pages/CandidatesKanban.jsx";
+import HRDashboard from "../pages/HRDashboard.jsx";
+import JobsListing from "../pages/JobsListing.jsx";
+import LandingPage from "../pages/LandingPage.jsx";
 import { Routes, Route } from "react-router";
 
 
