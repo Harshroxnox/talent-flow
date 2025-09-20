@@ -1,3 +1,4 @@
+UI/UX:
 
 HR-Dashboard
 https://dribbble.com/shots/26345029-Job-Application-Dashboard-UI-Design
@@ -13,3 +14,54 @@ https://dribbble.com/shots/24031634-Thoughts-Job-Listing-Page
 
 Assesment Creation
 -
+
+
+FOLDER STRUCTURE:
+/job-portal
+├── public/
+│   └── index.html
+├── src/
+│   ├── api/                # API layer (wrappers for fetch/msw calls)
+│   │   └── jobsApi.js
+│   │   └── candidatesApi.js
+│   │   └── assessmentsApi.js
+│
+│   ├── app/                # App-wide setup
+│   │   ├── store/          # Zustand stores
+│   │   │   └── jobsStore.js
+│   │   │   └── candidatesStore.js
+│   │   │   └── uiStore.js
+│   │   ├── db/             # Dexie database setup
+│   │   │   └── index.js
+│   │   ├── mocks/          # MSW server mocks
+│   │   │   ├── handlers.js
+│   │   │   ├── browser.js
+│   │   │   └── server.js
+│   │   ├── queryClient.js  # React Query setup
+│   │   └── App.jsx
+│
+│   ├── components/         # Reusable UI components
+│   │   ├── common/         # Buttons, Modals, Inputs
+│   │   ├── jobs/           # Job-related components
+│   │   ├── candidates/     # Candidate cards, Kanban columns
+│   │   ├── assessments/    # MCQ, FileUpload, etc.
+│   │   └── layout/         # Navbar, Sidebar, Page wrapper
+│
+│   ├── pages/              # Route-level pages
+│   │   ├── LandingPage.jsx
+│   │   ├── JobsListing.jsx
+│   │   ├── AssessmentCreation.jsx
+│   │   ├── CandidatesKanban.jsx
+│   │   └── HRDashboard.jsx
+│
+│   ├── routes/             # React Router v6 setup
+│   │   └── index.jsx
+│
+│   ├── styles/             # Tailwind config extensions / global css
+│   │   └── index.css
+│
+│   └── main.jsx            # Entry point
+│
+├── tailwind.config.js
+├── package.json
+└── vite.config.js          # assuming Vite setup
