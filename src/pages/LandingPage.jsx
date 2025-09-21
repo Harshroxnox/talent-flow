@@ -5,17 +5,23 @@ import React from 'react';
 import JobCard from '../components/JobCard'
 
 // Company logo's
-import Logo from '../components/Logo';
+import Logo from '../components/Logo'
 import microsoft from '../assets/microsoft.webp'
 import behance from '../assets/behance.jpg'
 import mailchimp from '../assets/mailchimp.png'
+import facebook from '../assets/facebook.png'
+import instagram from '../assets/instagram.png'
+import linkedin from '../assets/linkedin.png'
+import x from '../assets/x.png'
+import youtube from '../assets/youtube.png'
 
 // Buttons
 import SolutionBtn from '../components/SolutionBtn'
 import PrimaryBtn from '../components/PrimaryBtn'
 
 // Lucide Icons
-import { Megaphone, AppWindow, Brush, NotebookPen, Shield, BriefcaseBusiness, Handshake, Landmark } from 'lucide-react'
+import { Megaphone, AppWindow, Brush, NotebookPen, Shield, BriefcaseBusiness, 
+  Handshake, Landmark, Copyright } from 'lucide-react'
 
 // const LandingPage = () => {
 const LandingPage = () => {
@@ -65,7 +71,7 @@ const LandingPage = () => {
       </div>     
     </div>
 
-    {/* --------------------------------------Job-Board------------------------------------------------ */}
+    {/* --------------------------------------Solutions-Section------------------------------------------------ */}
     <div className='bg-blue px-18 pb-18'>
       <div><h1 className="text-5xl my-10 font-bold pt-20">One <span className='bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent'>Platform</span> Many Solutions</h1></div>
       <div className='grid grid-cols-4 gap-x-17 gap-y-8'>
@@ -102,8 +108,45 @@ const LandingPage = () => {
           </button>
         </div>
       </div>
-    
-    
+
+      
+      {/* --------------------------------------Footer-Section------------------------------------------------ */}
+      <div className='flex text-lg pb-15'>
+        <div className='w-xl'><Logo /></div>
+        <div className='grid grid-cols-4 gir gap-y-3 gap-x-22'>
+          <p>About</p>
+          <p>Press</p>
+          <p>Partners Relations</p>
+          <p>Blog</p>
+          <p>Jobs</p>
+          <p>Job Referrals</p>
+          <p>Contact Us</p>
+          <p>Help</p>
+          <p>Careers</p>
+          <p>Blog</p>
+          <p>Help & Support</p>
+          <p>Affiliate</p>
+          <p>Terms</p>
+          <p>Privacy Policy</p>
+        </div>
+      </div>
+      <hr className='h-[0.1rem] border-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'/>
+
+      <div className='text-[1.15rem] flex items-center justify-between py-5'>
+        <div className='flex items-center justify-start gap-3'>
+          <div className='p-2 rounded-full border-2 border-text h-10 w-10'><img src={facebook} alt="" /></div>
+          <div className='p-2 rounded-full border-2 border-text h-10 w-10'><img src={instagram} alt="" /></div>
+          <div className='p-2 rounded-full border-2 border-text h-10 w-10'><img src={x} alt="" /></div>
+          <div className='p-2 rounded-full border-2 border-text h-10 w-10'><img src={linkedin} alt="" /></div>
+          <div className='p-2 rounded-full border-2 border-text h-10 w-10'><img src={youtube} alt="" /></div>
+        </div>
+        <div className='flex items-center gap-7'>
+          <p>Terms & Condition</p>
+          <p>Privacy Policy</p>
+          <p>Support</p>
+        </div>
+        <div className='flex items-center gap-1'><Copyright/><p>copyright Harsh. All Rights Reserved</p></div>
+      </div>
     </div>
   </>)
 }
