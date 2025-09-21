@@ -6,7 +6,7 @@ Your selected colors:
     Secondary: #ADA8B6 - rgb(173, 168, 182) - hsl(261, 9%, 69%)
     Accent: #ffeedb - rgb(255, 238, 219) - hsl(32, 100%, 93%)
 
-#241d22ff
+#1d241dff
 #1f1f1fff
     
 
