@@ -9,7 +9,6 @@ Your selected colors:
   --color-grey: #d4cdd4ff;
   --color-dark-grey: #c4bdc4ff;
 
-#363636
 #c0b3c0ff;
 Realtime Colors link for selected colors: https://www.realtimecolors.com/?colors=eae9fc-1c1c1C-614799-ADA8B6-ffeedb&fonts=Inter-Inter#toolbar
 

@@ -1,8 +1,11 @@
-import React from 'react'
+import Sidebar from '../components/Sidebar'
 
 const CandidatesKanban = () => {
   return (
-    <div>CandidatesKanban</div>
+  <div className='flex h-screen text-[1.1rem]'>
+    <Sidebar />
+    <div className='flex-1'>CandidatesKanban</div>
+  </div>
   )
 }
 
