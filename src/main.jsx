@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from "react-router"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from './app/queryClient.js'
+import { initDbIfNeeded } from './app/db/index.js'
 import App from './app/App.jsx'
 import './styles/index.css'
 
@@ -11,6 +12,8 @@ if (import.meta.env.VITE_ENV === 'development') {
   const { worker } = await import("./app/mocks/browser");
   worker.start();
 }
+
+await initDbIfNeeded();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
