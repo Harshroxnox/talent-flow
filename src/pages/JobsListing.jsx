@@ -1,19 +1,41 @@
 import Sidebar from '../components/Sidebar'
-import { useEffect } from 'react'
-import axios from 'axios';
+import { useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query';
+import { fetchJobs } from '../api/jobs';
 
 import createJobImg from "../assets/jobs1.webp"
 import teamPlanImg from "../assets/jobs2.jpg"
 
 import JobPortalCard from '../components/JobPortalCard';
+import JobFilters from '../components/JobFilters';
 
 const JobsListing = () => {
+  // ---- Filters as state ----
+  const [search, setSearch] = useState('')
+  const [status, setStatus] = useState('')          // e.g., 'active', 'archived'
+  const [types, setTypes] = useState([])           // e.g., ['Full-time', 'Part-time'] //Full-time Part-time Intern Remote Contract
+  const [amounts, setAmounts] = useState([])       // e.g., ['10','15','20','25','30']
+  const [sort, setSort] = useState('order')        // e.g., 'title', 'order'
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(6)
+  
+
+  // ---- React Query ----
+  const { data, isLoading } = useQuery({
+    queryKey: ['jobs', { search, status, types, amounts, page, pageSize, sort }],
+    queryFn: () => fetchJobs({ search, status, types, amounts, page, pageSize, sort }),
+    keepPreviousData: true,
+  })
+
+  console.log(data)
 
   return (
   <div className='flex h-screen text-[1.1rem]'>
     <Sidebar />
 
-    <div className='flex-1 px-15'>
+    <div className='ml-61 flex-1 px-15'>
+
+
 
       <div className='flex items-center justify-center gap-5 py-4'>
         <div className='flex bg-secondary p-4 rounded-xl border-[0.01rem] border-[#343434ff]'>
@@ -35,13 +57,25 @@ const JobsListing = () => {
         </div>
       </div>
 
+      <JobFilters
+        search={search} setSearch={setSearch}
+        status={status} setStatus={setStatus}
+        types={types} setTypes={setTypes}
+        amounts={amounts} setAmounts={setAmounts}
+        sort={sort} setSort={setSort}
+      />
 
-      <div>
-          <JobPortalCard
-            title="Product Designer" status="active"
-            desc="The Sr Product designer will be responsible for creating production assets.."
-            location="Andover, MA" type="Remote" amount="25" 
-          />
+
+      <div className='grid grid-cols-3 gap-5'>
+          {
+            data?.data.map((job) => (
+              <JobPortalCard
+                title={job.title} status={job.status}
+                desc={job.desc}
+                location={job.location} type={job.type} amount={job.amount} 
+              />
+            ))
+          }
       </div>
 
     </div>

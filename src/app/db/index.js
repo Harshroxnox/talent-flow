@@ -22,15 +22,50 @@ export async function initDbIfNeeded() {
 
   // seed jobs
   const jobs = [];
+  const locations = [
+    "Glendale, CA",
+    "Andover, MA",
+    "Weston, MA",
+    "Austin, TX",
+    "Seattle, WA",
+    "Boston, MA",
+    "San Francisco, CA"
+  ];
+
+  const types = ["Full-time", "Part-time", "Intern", "Remote", "Contract"];
+  const amounts = [10, 15, 20, 25, 30];
+
+  const descriptions = [
+    "Take advantage of a rare opportunity to start from the ground up and build...",
+    "Join our dynamic team to work on exciting projects with a collaborative culture.",
+    "Lead innovative initiatives and shape the future of our product.",
+    "Work in a fast-paced environment where your ideas will have impact from day one.",
+    "Collaborate with talented engineers to create cutting-edge technology solutions.",
+    "Be part of a company that values creativity, learning, and personal growth.",
+    "Drive projects that directly influence our product roadmap and strategy."
+  ];
+
   for (let i = 1; i <= 25; i++) {
-    const title = [`Frontend Engineer`, `Backend Engineer`, `Fullstack Engineer`, `Product Designer`, `Data Scientist`][i % 5] + ` ${i}`;
-    const status = Math.random() < 0.75 ? 'active' : 'archived';
+    const title = [
+      "Frontend Engineer",
+      "Backend Engineer",
+      "Fullstack Engineer",
+      "Product Designer",
+      "Data Scientist",
+    ][i % 5] + ` ${i}`;
+
+    const status = Math.random() < 0.75 ? "active" : "archived";
+
     jobs.push({
       title,
       slug: slugify(title),
       status,
       tags: randomTags(),
-      order: i
+      order: i,
+      location: locations[randInt(0, locations.length - 1)],
+      type: types[randInt(0, types.length - 1)],
+      amount: amounts[randInt(0, amounts.length - 1)],
+      desc: descriptions[randInt(0, descriptions.length - 1)],
     });
   }
   const jobIds = await db.jobs.bulkAdd(jobs, { allKeys: true });

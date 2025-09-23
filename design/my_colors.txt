@@ -6,19 +6,22 @@ Your selected colors:
   --color-secondary: #241d22ff;
   --color-accent: #E640B2;
   --color-blue: #211d24ff;
+  --color-border: #343434ff;
   --color-grey: #d4cdd4ff;
   --color-dark-grey: #c4bdc4ff;
 
 #343434ff
 
-search with title, tags  
+
 location: "Glendale, CA" "Andover, MA" "Weston, MA" 
 type: Full-time Part-time Intern Remote Contract
 desc: Take advantage of a rare opportunity to start from the ground up and build...
 amount: 10 15 20 25 30
-status: active | archived
+
 order: 
 sorted by order or amount can choose field
+search with title, tags  
+status: active | archived
 tags
 
 edit and archive job feature

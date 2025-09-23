@@ -3,7 +3,7 @@ import NavItems from '../components/NavItems'
 
 const Sidebar = () => {
   return (
-    <div className='flex flex-col justify-between w-60 bg-grey text-background m-1 p-5 rounded-xl'>
+    <div className='fixed h-[99vh] flex flex-col justify-between w-60 bg-grey text-background m-1 p-5 rounded-xl'>
       <div className='flex flex-col gap-6'>
         <div className="font-bold text-2xl">
           <span className='text-accent'>T</span>alent<span className='text-accent'>F</span>low

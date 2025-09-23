@@ -3,7 +3,7 @@ import { MapPin, Briefcase, EllipsisVertical, LayoutGrid } from 'lucide-react'
 
 const JobPortalCard = ({ title, status, desc, location, type, amount }) => {
   return (
-    <div className="flex flex-col gap-3 w-[28vw] p-8 bg-blue rounded-2xl border-[0.01rem] border-[#343434ff]">
+    <div className="flex flex-col gap-3 text-sm p-6 bg-blue rounded-2xl border-[0.01rem] border-[#343434ff]">
       <div className='flex items-center justify-between'>
         <div>
           <div>

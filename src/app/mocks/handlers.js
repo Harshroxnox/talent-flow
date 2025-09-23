@@ -6,25 +6,55 @@ import { randomDelay, maybeFail } from './utils.js'
 // --- Handlers ---
 export const handlers = [
 
-  // GET /jobs?search=&status=&page=&pageSize=&sort=
+  // GET /jobs?search=&status=&page=&pageSize=&sort=&type=&amount=
   http.get('/jobs', async ({ request }) => {
     await randomDelay()
     const url = new URL(request.url)
+
+    // single-value filters
     const search = url.searchParams.get('search')?.toLowerCase() || ''
     const status = url.searchParams.get('status')
     const page = parseInt(url.searchParams.get('page') || '1')
     const pageSize = parseInt(url.searchParams.get('pageSize') || '10')
     const sort = url.searchParams.get('sort') || 'order'
 
+    // multi-value filters
+    const types = url.searchParams.getAll('type')      // e.g. ["Full-time", "Part-time"]
+    const amounts = url.searchParams.getAll('amount') // e.g. ["10","20"]
+
     let jobs = await db.jobs.toArray()
-    if (search) jobs = jobs.filter(j => j.title.toLowerCase().includes(search))
-    if (status) jobs = jobs.filter(j => j.status === status)
+
+    // search by title
+    if (search) {
+      jobs = jobs.filter(j => j.title.toLowerCase().includes(search))
+    }
+
+    // filter by status
+    if (status) {
+      jobs = jobs.filter(j => j.status === status)
+    }
+
+    // filter by multiple types
+    if (types.length > 0) {
+      jobs = jobs.filter(j => types.includes(j.type))
+    }
+
+    // filter by multiple amounts (cast to string for comparison)
+    if (amounts.length > 0) {
+      jobs = jobs.filter(j => amounts.includes(String(j.amount)))
+    }
+
+    // sorting
     jobs = jobs.sort((a, b) => (a[sort] > b[sort] ? 1 : -1))
 
+    // pagination
     const start = (page - 1) * pageSize
     const paginated = jobs.slice(start, start + pageSize)
 
-    return HttpResponse.json({ data: paginated, total: jobs.length })
+    return HttpResponse.json({
+      data: paginated,
+      total: jobs.length,
+    })
   }),
 
   // POST /jobs
