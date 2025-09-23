@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 
 const JobFormModal = ({ isOpen, onClose, onSubmit, isSubmitting, jobToEdit }) => {
   const [formData, setFormData] = useState({
+    id: null,
     title: '',
     desc: '',
     location: '',
@@ -14,6 +15,7 @@ const JobFormModal = ({ isOpen, onClose, onSubmit, isSubmitting, jobToEdit }) =>
   useEffect(() => {
     if (jobToEdit) {
       setFormData({
+        id: jobToEdit.id,
         title: jobToEdit.title || '',
         desc: jobToEdit.desc || '',
         location: jobToEdit.location || '',
@@ -23,7 +25,7 @@ const JobFormModal = ({ isOpen, onClose, onSubmit, isSubmitting, jobToEdit }) =>
     } else {
       // Clear form for creation
       setFormData({
-        title: '', desc: '', location: '', type: 'Full-time', amount: '',
+        id: null, title: '', desc: '', location: '', type: 'Full-time', amount: '',
       });
     }
   }, [jobToEdit, isOpen]);

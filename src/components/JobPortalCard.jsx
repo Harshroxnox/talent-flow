@@ -1,7 +1,32 @@
-import React from 'react'
-import { MapPin, Briefcase, EllipsisVertical, LayoutGrid } from 'lucide-react'
+import React, { useState, useEffect, useRef } from 'react'
+import { MapPin, Briefcase, EllipsisVertical, LayoutGrid, Edit, Archive, ArchiveRestore } from 'lucide-react'
 
-const JobPortalCard = ({ title, status, desc, location, type, amount }) => {
+const JobPortalCard = ({ job, onEdit, onToggleArchive }) => {
+  const { id, title, status, desc, location, type, amount } = job
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleEdit = () => {
+    onEdit(job);
+    setIsMenuOpen(false);
+  }
+
+  const handleToggleArchive = () => {
+    onToggleArchive(job);
+    setIsMenuOpen(false);
+  }
+
   return (
     <div className="flex flex-col gap-3 text-sm p-6 bg-blue rounded-2xl border-[0.01rem] border-[#343434ff]">
       <div className='flex items-center justify-between'>
@@ -13,7 +38,28 @@ const JobPortalCard = ({ title, status, desc, location, type, amount }) => {
         </div>
         <div className='flex gap-2'>
           <div className='p-1 cursor-pointer hover:bg-[#1c1c1C] rounded-sm'><LayoutGrid /></div>
-          <div className='p-1 cursor-pointer hover:bg-[#1c1c1C] rounded-sm'><EllipsisVertical /></div>
+
+          <div className='relative' ref={menuRef}>
+            <div onClick={() => setIsMenuOpen(!isMenuOpen)} className='p-1 cursor-pointer hover:bg-[#1c1c1C] rounded-sm'><EllipsisVertical /></div>
+            {/* Dropdown Menu */}
+            {isMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-secondary border border-border rounded-lg shadow-xl z-10">
+                <ul className="py-1">
+                  <li>
+                    <button onClick={handleEdit} className="flex items-center gap-3 px-4 py-2 text-sm text-text hover:bg-blue">
+                      <Edit size={16} /> Edit
+                    </button>
+                  </li>
+                  <li>
+                    <button onClick={handleToggleArchive} className={`flex items-center gap-3 px-4 py-2 text-sm hover:bg-blue ${status === 'active' ? 'text-text' : 'text-green-400'}`}>
+                      {status === 'active' ? <><Archive size={16} /> Archive</> : <><ArchiveRestore size={16} /> Unarchive</>}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+
         </div>
       </div >
       <div>{desc}</div>

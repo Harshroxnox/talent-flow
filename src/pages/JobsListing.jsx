@@ -1,15 +1,19 @@
-import Sidebar from '../components/Sidebar'
 import { useState, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query';
-import { fetchJobs } from '../api/jobs';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { queryClient } from '../app/queryClient';
+import toast from 'react-hot-toast';
+
+import { fetchJobs, createJob, updateJob } from '../api/jobs';
 
 import createJobImg from "../assets/jobs1.webp"
 import teamPlanImg from "../assets/jobs2.jpg"
 
+import Sidebar from '../components/Sidebar'
 import JobPortalCard from '../components/JobPortalCard';
 import JobFilters from '../components/JobFilters';
 import BtnWhite from '../components/BtnWhite';
 import Pagination from '../components/Pagination';
+import JobFormModal from '../components/JobFormModal';
 
 const JobsListing = () => {
   // ---- Filters as state ----
@@ -21,16 +25,63 @@ const JobsListing = () => {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(6)
   
+  // ---- Modal State ----
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingJob, setEditingJob] = useState(null); // null for create, job object for edit
 
-  // ---- React Query ----
+  // ---- React Query for Fetching jobs ----
   const { data, isFetching } = useQuery({
     queryKey: ['jobs', { search, status, types, amounts, page, pageSize, sort }],
     queryFn: () => fetchJobs({ search, status, types, amounts, page, pageSize, sort }),
     keepPreviousData: true,
   })
 
+  // ---- React Query Mutation for Creating/Updating a Job ----
+  const { mutate: saveJob, isLoading: isSaving } = useMutation({
+    mutationFn: (jobData) => {
+      return jobData.id ? updateJob(jobData) : createJob(jobData);
+    },
+    onSuccess: (data) => {
+      toast.success(`Job "${data.title}" has been saved successfully!`);
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      setIsModalOpen(false);
+      setEditingJob(null);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "Failed to save the job. Please try again.");
+    },
+  });
 
-  return (
+  // ---- React Query Mutation for Archiving/Unarchiving a Job ----
+  const { mutate: toggleArchiveJob } = useMutation({
+    mutationFn: (job) => updateJob({ 
+      id: job.id, 
+      status: job.status === 'active' ? 'archived' : 'active' 
+    }),
+    onSuccess: (_, variables) => {
+      const action = variables.status === 'active' ? 'Archived' : 'Unarchived';
+      toast.success(`Job "${variables.title}" has been ${action.toLowerCase()}!`);
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+    },
+    onError: (error, variables) => {
+      const action = variables.status === 'active' ? 'Archive' : 'Unarchive';
+      toast.error(`Failed to ${action.toLowerCase()} job. Please try again.`);
+    },
+  });
+
+  // ---- Handlers for Modal and Forms ----
+  const handleOpenCreateModal = () => {
+    setEditingJob(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditModal = (job) => {
+    setEditingJob(job);
+    setIsModalOpen(true);
+  };
+
+
+  return (<>
   <div className='flex h-screen text-[1.1rem]'>
     <Sidebar />
 
@@ -41,7 +92,7 @@ const JobsListing = () => {
           <div className='flex flex-col gap-1'>
             <h1 className='font-[400]'>Create a Job Post</h1>
             <p className='text-[1rem] pb-2'>Create a post for a full-time or freelance job opportunity and manage all applicants from your direct Jobs inbox.</p>
-            <BtnWhite label="Post a new job"/>
+            <div onClick={handleOpenCreateModal}><BtnWhite label="Post a new job"/></div>
           </div>
           <div className='ml-3 flex items-center justify-center'><img src={createJobImg} alt="" className='h-35 w-115 rounded-lg'/></div>
         </div>
@@ -74,9 +125,10 @@ const JobsListing = () => {
           {
             data.data.map((job) => (
               <JobPortalCard
-                title={job.title} status={job.status}
-                desc={job.desc}
-                location={job.location} type={job.type} amount={job.amount} 
+                key={job.id}
+                job={job}
+                onEdit={handleOpenEditModal}
+                onToggleArchive={toggleArchiveJob}
               />
             ))
           }
@@ -97,7 +149,16 @@ const JobsListing = () => {
 
     </div>
   </div>
-  )
+
+  <JobFormModal 
+    isOpen={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    onSubmit={saveJob}
+    isSubmitting={isSaving}
+    jobToEdit={editingJob}
+  />
+
+  </>)
 }
 
 export default JobsListing

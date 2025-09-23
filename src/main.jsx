@@ -8,11 +8,10 @@ import { Toaster } from 'react-hot-toast'
 import App from './app/App.jsx'
 import './styles/index.css'
 
-// Start MSW only in development
-if (import.meta.env.VITE_ENV === 'development') {
-  const { worker } = await import("./app/mocks/browser");
-  worker.start();
-}
+// Start MSW 
+const { worker } = await import("./app/mocks/browser");
+worker.start();
+
 
 await initDbIfNeeded();
 
