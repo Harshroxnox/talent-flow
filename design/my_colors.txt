@@ -2,13 +2,13 @@ Your selected colors:
 
   --color-text: #eae9fc;
   --color-background: #1c1c1C;
-  --color-primary: #a4307fff;
   --color-secondary: #241d22ff;
-  --color-accent: #E640B2;
   --color-blue: #211d24ff;
   --color-border: #343434ff;
   --color-grey: #d4cdd4ff;
   --color-dark-grey: #c4bdc4ff;
+  --color-accent: #E640B2;
+  --color-primary: #a4307fff;
 
 #343434ff
 

@@ -8,6 +8,7 @@ import teamPlanImg from "../assets/jobs2.jpg"
 
 import JobPortalCard from '../components/JobPortalCard';
 import JobFilters from '../components/JobFilters';
+import BtnWhite from '../components/BtnWhite';
 
 const JobsListing = () => {
   // ---- Filters as state ----
@@ -42,7 +43,7 @@ const JobsListing = () => {
           <div className='flex flex-col gap-1'>
             <h1 className='font-[400]'>Create a Job Post</h1>
             <p className='text-[1rem] pb-2'>Create a post for a full-time or freelance job opportunity and manage all applicants from your direct Jobs inbox.</p>
-            <button className='self-start rounded-md text-[1rem] cursor-pointer hover:bg-dark-grey bg-grey text-background font-[400] py-[0.4rem] px-3'>Post a new job</button>
+            <BtnWhite label="Post a new job"/>
           </div>
           <div className='ml-3 flex items-center justify-center'><img src={createJobImg} alt="" className='h-35 w-115 rounded-lg'/></div>
         </div>
@@ -51,7 +52,7 @@ const JobsListing = () => {
           <div className='flex flex-col gap-1'>
             <h1 className='font-[400]'>Unlimited Posting with Team Plan</h1>
             <p className='text-[1rem] pb-2'>Browse, post jobs and connect with top-notch creators and find the perfect candidate for your next project with our team plan.</p>
-            <button className='self-start rounded-md text-[1rem] cursor-pointer hover:bg-dark-grey bg-grey text-background font-[400] py-[0.4rem] px-3'>Try Team Plan</button>
+            <BtnWhite label="Try Team Plan" />
           </div>
           <div className='ml-3 flex items-center justify-center'><img src={teamPlanImg} alt="" className='h-35 w-115 rounded-lg'/></div>
         </div>
