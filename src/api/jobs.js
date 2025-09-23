@@ -17,3 +17,13 @@ export async function fetchJobs(filters) {
   const res = await axios.get(`/jobs?${params.toString()}`)
   return res.data
 }
+
+export const createJob = async (jobData) => {
+  const { data } = await axios.post('/jobs', jobData)
+  return data
+}
+
+export const updateJob = async ({ id, ...jobData }) => {
+  const { data } = await axios.patch(`/jobs/${id}`, jobData)
+  return data
+}

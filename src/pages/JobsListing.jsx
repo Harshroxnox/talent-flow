@@ -9,6 +9,7 @@ import teamPlanImg from "../assets/jobs2.jpg"
 import JobPortalCard from '../components/JobPortalCard';
 import JobFilters from '../components/JobFilters';
 import BtnWhite from '../components/BtnWhite';
+import Pagination from '../components/Pagination';
 
 const JobsListing = () => {
   // ---- Filters as state ----
@@ -22,21 +23,18 @@ const JobsListing = () => {
   
 
   // ---- React Query ----
-  const { data, isLoading } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ['jobs', { search, status, types, amounts, page, pageSize, sort }],
     queryFn: () => fetchJobs({ search, status, types, amounts, page, pageSize, sort }),
     keepPreviousData: true,
   })
 
-  console.log(data)
 
   return (
   <div className='flex h-screen text-[1.1rem]'>
     <Sidebar />
 
     <div className='ml-61 flex-1 px-15'>
-
-
 
       <div className='flex items-center justify-center gap-5 py-4'>
         <div className='flex bg-secondary p-4 rounded-xl border-[0.01rem] border-[#343434ff]'>
@@ -67,9 +65,14 @@ const JobsListing = () => {
       />
 
 
-      <div className='grid grid-cols-3 gap-5'>
+      {isFetching ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ):(
+        <div className='grid grid-cols-3 gap-5'>
           {
-            data?.data.map((job) => (
+            data.data.map((job) => (
               <JobPortalCard
                 title={job.title} status={job.status}
                 desc={job.desc}
@@ -77,7 +80,20 @@ const JobsListing = () => {
               />
             ))
           }
-      </div>
+        </div>
+      )}
+
+      {
+        !isFetching && (
+          <div className='flex items-center justify-center pb-5'>
+            <Pagination 
+              page={page} setPage={setPage}
+              pageSize={pageSize} setPageSize={setPageSize}
+              totalItems={data.total}
+            />
+          </div>
+        )
+      }
 
     </div>
   </div>
