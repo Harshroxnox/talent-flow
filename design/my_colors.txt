@@ -9,7 +9,20 @@ Your selected colors:
   --color-grey: #d4cdd4ff;
   --color-dark-grey: #c4bdc4ff;
 
-#c0b3c0ff;
+#343434ff
+
+search with title, tags  
+location: "Glendale, CA" "Andover, MA" "Weston, MA" 
+type: Full-time Part-time Intern Remote Contract
+desc: Take advantage of a rare opportunity to start from the ground up and build...
+amount: 10 15 20 25 30
+status: active | archived
+order: 
+sorted by order or amount can choose field
+tags
+
+edit and archive job feature
+
 Realtime Colors link for selected colors: https://www.realtimecolors.com/?colors=eae9fc-1c1c1C-614799-ADA8B6-ffeedb&fonts=Inter-Inter#toolbar
 
 Thanks for using RealtimeColors.com!

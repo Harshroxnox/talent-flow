@@ -5,6 +5,7 @@ export const randomDelay = () => {
 }
 
 export const maybeFail = () => {
+  return
   // 5–10% error rate
   if (Math.random() < 0.1) {
     throw new Error('Simulated network error');
