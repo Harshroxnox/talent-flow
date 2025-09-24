@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router'
 import { MapPin, Briefcase, EllipsisVertical, LayoutGrid, Edit, Archive, ArchiveRestore } from 'lucide-react'
 
 const JobPortalCard = ({ job, onEdit, onToggleArchive }) => {
@@ -72,7 +73,9 @@ const JobPortalCard = ({ job, onEdit, onToggleArchive }) => {
           <div className='text-lg font-normal'>{`$${amount}K`}</div>
           <div>Monthly</div>
         </div>
-        <div className='px-16 py-3 border-1 font-bold rounded-full cursor-pointer hover:bg-background'>Candidates</div>
+        <Link to={`/jobs/${id}/candidates`} className='px-16 py-3 border-1 font-bold rounded-full cursor-pointer hover:bg-background'>
+          Candidates
+        </Link>
       </div>
     </div>
   )
