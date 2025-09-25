@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createCandidate, updateCandidate } from '../api/candidates';
-import { queryClient } from '../app/queryClient';
 import toast from 'react-hot-toast';
 
 const CandidateFormModal = ({ isOpen, onClose, candidateToEdit }) => {
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     id: null,
     name: '',
     email: '',
+    phone: '',
+    city: '',
+    country: '',
+    experience: '',
+    skills: '', // Skills will be handled as a comma-separated string in the form
   });
 
   useEffect(() => {
@@ -18,28 +23,43 @@ const CandidateFormModal = ({ isOpen, onClose, candidateToEdit }) => {
         id: candidateToEdit.id,
         name: candidateToEdit.name || '',
         email: candidateToEdit.email || '',
+        phone: candidateToEdit.phone || '',
+        city: candidateToEdit.city || '',
+        country: candidateToEdit.country || '',
+        experience: candidateToEdit.experience || '',
+        skills: (candidateToEdit.skills || []).join(', '), // Convert array to string for input
       });
     } else {
+      // Reset form for creating a new candidate
       setFormData({
-        id: null,
-        name: '',
-        email: '',
+        id: null, name: '', email: '', phone: '', city: '', country: '', experience: '', skills: '',
       });
     }
   }, [candidateToEdit, isOpen]);
 
   const { mutate: saveCandidate, isLoading } = useMutation({
     mutationFn: (candidateData) => {
-      return candidateData.id
-        ? updateCandidate(candidateData)
-        : createCandidate(candidateData);
+      // Prepare data for API
+      const payload = {
+        ...candidateData,
+        // FIX: Ensure experience is an integer, defaulting to 0
+        experience: parseInt(candidateData.experience, 10) || 0,
+        // Convert skills string back to array, filtering out empty strings
+        skills: typeof candidateData.skills === 'string'
+          ? candidateData.skills.split(',').map(s => s.trim()).filter(Boolean)
+          : [],
+      };
+      return payload.id
+        ? updateCandidate(payload)
+        : createCandidate(payload);
     },
     onSuccess: () => {
       toast.success('Candidate saved successfully!');
       queryClient.invalidateQueries({ queryKey: ['candidates'] });
       onClose();
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Save Candidate Error:", error);
       toast.error('Failed to save candidate.');
     },
   });
@@ -66,9 +86,10 @@ const CandidateFormModal = ({ isOpen, onClose, candidateToEdit }) => {
           <X size={24} />
         </button>
         <h2 className='text-2xl font-semibold mb-6'>
-          {candidateToEdit ? 'Edit Candidate' : 'Create a New Candidate'}
+          {candidateToEdit ? 'Edit Candidate Details' : 'Create a New Candidate'}
         </h2>
         <form onSubmit={handleSubmit} className='space-y-4'>
+          {/* --- Name and Email Fields --- */}
           <div>
             <label htmlFor='name' className='block text-sm font-medium text-grey mb-1'>
               Name
@@ -97,6 +118,81 @@ const CandidateFormModal = ({ isOpen, onClose, candidateToEdit }) => {
               className='w-full bg-blue border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none'
             />
           </div>
+
+          {/* --- All Additional Details --- */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+                <label htmlFor='phone' className='block text-sm font-medium text-grey mb-1'>
+                Phone Number
+                </label>
+                <input
+                type='tel'
+                name='phone'
+                id='phone'
+                value={formData.phone}
+                onChange={handleChange}
+                className='w-full bg-blue border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none'
+                />
+            </div>
+             <div>
+                <label htmlFor='experience' className='block text-sm font-medium text-grey mb-1'>
+                Experience (Years)
+                </label>
+                <input
+                type='number'
+                name='experience'
+                id='experience'
+                value={formData.experience}
+                onChange={handleChange}
+                className='w-full bg-blue border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none'
+                />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+             <div>
+                <label htmlFor='city' className='block text-sm font-medium text-grey mb-1'>
+                City
+                </label>
+                <input
+                type='text'
+                name='city'
+                id='city'
+                value={formData.city}
+                onChange={handleChange}
+                className='w-full bg-blue border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none'
+                />
+            </div>
+            <div>
+                <label htmlFor='country' className='block text-sm font-medium text-grey mb-1'>
+                Country
+                </label>
+                <input
+                type='text'
+                name='country'
+                id='country'
+                value={formData.country}
+                onChange={handleChange}
+                className='w-full bg-blue border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none'
+                />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor='skills' className='block text-sm font-medium text-grey mb-1'>
+              Skills (comma-separated)
+            </label>
+            <input
+              type='text'
+              name='skills'
+              id='skills'
+              placeholder="e.g., React, Node.js, SQL"
+              value={formData.skills}
+              onChange={handleChange}
+              className='w-full bg-blue border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none'
+            />
+          </div>
+
           <div className='flex justify-end gap-4 pt-4'>
             <button
               type='button'

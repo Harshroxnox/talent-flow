@@ -7,6 +7,7 @@ export async function fetchCandidates(filters) {
   // single-value filters
   if (filters.search) params.append('search', filters.search);
   if (filters.stage) params.append('stage', filters.stage);
+  if (filters.jobId) params.append('jobId', filters.jobId); // Add this line
   params.append('page', filters.page || 1);
   params.append('pageSize', filters.pageSize || 10);
 

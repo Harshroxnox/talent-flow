@@ -127,7 +127,7 @@ const JobFilters = ({
         <p className='font-[400]'>Job Types: </p>
         <div className='flex items-center gap-2'>
           {typeOptions.map((type) => (
-            <BtnFilter label={type} onClick={() => handleTypeToggle(type)} isActive={types.includes(type)}/>
+            <BtnFilter key={type} label={type} onClick={() => handleTypeToggle(type)} isActive={types.includes(type)}/>
           ))}
         </div>
       </div>
@@ -139,7 +139,7 @@ const JobFilters = ({
           <p className='font-[400]'>Amounts: </p>
           <div className='flex items-center gap-2'>
             {amountOptions.map((amt) => (
-              <BtnFilter label={`$${amt}K`} onClick={() => handleAmountToggle(amt)} isActive={amounts.includes(amt)}/>
+              <BtnFilter key={amt} label={`$${amt}K`} onClick={() => handleAmountToggle(amt)} isActive={amounts.includes(amt)}/>
             ))}
           </div>
         </div>

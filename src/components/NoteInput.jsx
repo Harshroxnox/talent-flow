@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
 const users = [
-  { id: 1, name: 'Sandra Marx' },
-  { id: 2, name: 'John Doe' },
-  { id: 3, name: 'Jane Smith' },
+  { id: 1, name: 'SandraMarx' },
+  { id: 2, name: 'JohnDoe' },
+  { id: 3, name: 'JaneSmith' },
 ];
 
-const NoteInput = () => {
+const NoteInput = ({ onSubmit, isSaving }) => {
   const [text, setText] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
@@ -14,7 +14,7 @@ const NoteInput = () => {
     const value = e.target.value;
     setText(value);
 
-    const lastWord = value.split(' ').pop();
+    const lastWord = value.split(/(\s+)/).pop();
     if (lastWord.startsWith('@')) {
       const searchTerm = lastWord.substring(1).toLowerCase();
       const filteredUsers = users.filter((user) =>
@@ -33,17 +33,24 @@ const NoteInput = () => {
     setSuggestions([]);
   };
 
+  const handleSave = () => {
+    if (text.trim()) {
+      onSubmit(text);
+      setText('');
+    }
+  };
+
   return (
     <div className='relative'>
       <textarea
-        className='w-full bg-blue border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none'
+        className='w-full bg-secondary border border-border rounded-lg p-2 focus:ring-2 focus:ring-primary outline-none'
         rows='4'
         placeholder='Add a note... use @ to mention someone'
         value={text}
         onChange={handleChange}
       ></textarea>
       {suggestions.length > 0 && (
-        <ul className='absolute bottom-full left-0 mb-2 w-full bg-secondary border border-border rounded-lg shadow-lg'>
+        <ul className='absolute bottom-full left-0 mb-2 w-full bg-secondary border border-border rounded-lg shadow-lg z-10'>
           {suggestions.map((user) => (
             <li
               key={user.id}
@@ -55,6 +62,15 @@ const NoteInput = () => {
           ))}
         </ul>
       )}
+      <div className="flex justify-end mt-2">
+        <button
+          onClick={handleSave}
+          disabled={isSaving || !text.trim()}
+          className="py-2 mt-2 px-5 rounded-lg cursor-pointer bg-grey text-background font-semibold hover:bg-dark-grey disabled:bg-primary/50 disabled:cursor-not-allowed"
+        >
+          {isSaving ? 'Saving...' : 'Save Note'}
+        </button>
+      </div>
     </div>
   );
 };

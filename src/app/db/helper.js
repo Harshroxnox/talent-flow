@@ -1,4 +1,3 @@
-
 const firstNames = [
   'Aarav','Ishaan','Karan','Rohan','Vikram','Kabir','Ananya','Riya','Simran','Meera',
   'Arjun','Rahul','Dev','Nikhil','Siddharth','Priya','Neha','Shruti','Kavya','Tanvi',
@@ -39,4 +38,37 @@ export const randomTags = () => {
   const out = new Set();
   for (let i = 0; i < n; i++) out.add(pool[randInt(0, pool.length - 1)]);
   return [...out];
+}
+
+// --- New Helper Functions ---
+
+export const randomPhoneNumber = () => {
+    return `+91 9${randInt(10, 99)} ${randInt(100, 999)} ${randInt(1000, 9999)}`;
+}
+
+export const randomDate = (start, end) => {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+const locations = [
+    { city: "Mumbai", country: "India" },
+    { city: "Delhi", country: "India" },
+    { city: "Bangalore", country: "India" },
+    { city: "San Francisco", country: "USA" },
+    { city: "New York", country: "USA" },
+    { city: "London", country: "UK" },
+];
+
+export const randomLocation = () => {
+    return locations[randInt(0, locations.length - 1)];
+}
+
+export const randomSkills = () => {
+    const pool = ['JavaScript', 'React', 'Node.js', 'TypeScript', 'Java', 'MongoDB', 'CSS', 'HTML', 'SQL', 'Python'];
+    const n = randInt(3, 7);
+    const out = new Set();
+    for (let i = 0; i < n; i++) {
+        out.add(pool[randInt(0, pool.length - 1)]);
+    }
+    return [...out];
 }

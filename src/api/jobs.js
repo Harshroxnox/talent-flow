@@ -6,6 +6,7 @@ export async function fetchJobs(filters) {
   // single-value filters
   if (filters.search) params.append('search', filters.search)
   if (filters.status) params.append('status', filters.status)
+  if (filters.id) params.append('id', filters.id)
   params.append('page', filters.page || 1)
   params.append('pageSize', filters.pageSize || 10)
   params.append('sort', filters.sort || 'order')
@@ -27,3 +28,8 @@ export const updateJob = async ({ id, ...jobData }) => {
   const { data } = await axios.patch(`/jobs/${id}`, jobData)
   return data
 }
+
+export const reorderJob = async ({ id, fromOrder, toOrder }) => {
+    const { data } = await axios.patch(`/jobs/${id}/reorder`, { fromOrder, toOrder });
+    return data;
+};

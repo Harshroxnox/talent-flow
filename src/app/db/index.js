@@ -1,20 +1,22 @@
 // index/db.js
 import Dexie from 'dexie';
-import { randomName, randomEmail, randInt, slugify, randomTags } from './helper.js';
+import { randomName, randomEmail, randInt, slugify, randomTags, randomPhoneNumber, randomDate, randomLocation, randomSkills } from './helper.js';
 
 export const db = new Dexie('JobPortalDB');
 
 // Database Schema
 db.version(1).stores({
-  jobs: '++id, title, status, order',
+  jobs: '++id, title, status, order, slug',
   candidates: '++id, name, email, stage, jobId',
+  // Add a new 'notes' table
+  notes: '++id, candidateId, text, createdAt', 
   assessments: '++id, jobId, type',
   submissions: '++id, jobId, candidateId, submittedAt',
   meta: 'key' // for storing e.g. seeded=true
 });
 
 
-// Initial seed function 
+// Initial seed function
 export async function initDbIfNeeded() {
   // ensure we only seed once
   const meta = await db.meta.get('seeded');
@@ -79,10 +81,36 @@ export async function initDbIfNeeded() {
     const email = randomEmail(name);
     const jobId = jobIds[randInt(0, jobIds.length - 1)];
     const stage = stages[randInt(0, stages.length - 1)];
-    candidates.push({ name, email, stage, jobId });
+    const location = randomLocation();
+
+    candidates.push({
+        name,
+        email,
+        stage,
+        jobId,
+        phone: randomPhoneNumber(),
+        appliedDate: randomDate(new Date(2024, 0, 1), new Date()).toISOString(),
+        city: location.city,
+        country: location.country,
+        experience: randInt(0, 10), // Years of experience
+        skills: randomSkills(),
+    });
   }
 
-  await db.candidates.bulkAdd(candidates);
+  const candidateIds = await db.candidates.bulkAdd(candidates, { allKeys: true });
+
+  // --- FIX: Seed the submissions table for the timeline ---
+  const submissions = [];
+  for (let i = 0; i < candidateIds.length; i++) {
+      const candidateId = candidateIds[i];
+      const candidate = candidates[i];
+      submissions.push({
+          jobId: candidate.jobId,
+          candidateId: candidateId,
+          submittedAt: candidate.appliedDate, 
+      });
+  }
+  await db.submissions.bulkAdd(submissions);
 
   // mark seeded
   await db.meta.put({ key: 'seeded', value: true });

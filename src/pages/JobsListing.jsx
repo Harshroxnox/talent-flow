@@ -123,7 +123,7 @@ const JobsListing = () => {
       ):(
         <div className='grid grid-cols-3 gap-5'>
           {
-            data.data.map((job) => (
+            data && data.data && data.data.map((job) => (
               <JobPortalCard
                 key={job.id}
                 job={job}
@@ -136,7 +136,7 @@ const JobsListing = () => {
       )}
 
       {
-        !isFetching && (
+        !isFetching && data && (
           <div className='flex items-center justify-center pb-5'>
             <Pagination 
               page={page} setPage={setPage}
