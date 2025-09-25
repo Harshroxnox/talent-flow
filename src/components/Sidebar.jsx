@@ -18,8 +18,7 @@ const Sidebar = () => {
         </div>
         <hr className='h-[0.1rem] mt-2 border-0 bg-[#c0b3c0ff]'/>
         
-        <div className='flex flex-col mt-6'>
-          <NavItems Icon={Monitor} label="Dashboard" to="/dashboard" isCollapsed={isCollapsed} />
+        <div className='flex flex-col mt-3'>
           <NavItems Icon={Briefcase} label="Jobs" to="/jobs" isCollapsed={isCollapsed} />
           <NavItems Icon={Users} label="Candidates" to="/candidates" isCollapsed={isCollapsed} />
           <NavItems Icon={FilePen} label="Assessments" to="/assessments" isCollapsed={isCollapsed} />

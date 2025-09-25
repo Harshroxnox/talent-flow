@@ -4,6 +4,9 @@ import React from 'react';
 // Cards
 import JobCard from '../components/JobCard'
 
+// Router
+import { Link } from 'react-router';
+
 // Company logo's
 import Logo from '../components/Logo'
 import microsoft from '../assets/microsoft.webp'
@@ -37,7 +40,7 @@ const LandingPage = () => {
           <div>Find Candidates</div>
           <div>Career Advice</div>
         </div>
-        <PrimaryBtn text="Login Now" />
+        <Link to="jobs"><PrimaryBtn text="Get Started" /></Link>
       </div>
 
 

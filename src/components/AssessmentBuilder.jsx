@@ -839,7 +839,7 @@ const AssessmentBuilder = ({ jobId, existingAssessment }) => {
         {/* Header */}
         <header className="flex flex-col md:flex-row justify-between md:items-center mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-white">Assessments</h2>
+            <h2 className="w-fit text-5xl font-bold my-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">Assessments</h2>
             <p className="text-[var(--color-dark-grey)] mt-1">Manage and create assessments for your job openings.</p>
           </div>
           <button

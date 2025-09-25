@@ -6,6 +6,8 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 import { fetchJobs, createJob, updateJob, reorderJob } from '../api/jobs';
 
+import { useSidebarStore } from '../app/store/sidebarStore';
+
 import createJobImg from "../assets/jobs1.webp"
 import teamPlanImg from "../assets/jobs2.jpg"
 
@@ -25,6 +27,8 @@ const JobsListing = () => {
   const [sort, setSort] = useState('order')        // e.g., 'title', 'order'
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(6)
+
+  const { isCollapsed } = useSidebarStore(); 
 
   // ---- Modal State ----
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -115,7 +119,7 @@ const JobsListing = () => {
   <div className='flex h-screen text-[1.1rem]'>
     <Sidebar />
 
-    <div className='ml-61 flex-1 px-15'>
+    <div className={`flex-1 px-15 transition-all duration-300 ${isCollapsed ? 'ml-20' : 'ml-60'}`}>
 
       <div className='flex items-center justify-center gap-5 py-4'>
         <div className='flex bg-secondary p-4 rounded-xl border-[0.01rem] border-[#343434ff]'>
