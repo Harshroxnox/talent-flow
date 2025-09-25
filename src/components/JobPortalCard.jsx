@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router'
 import { MapPin, Briefcase, EllipsisVertical, LayoutGrid, Edit, Archive, ArchiveRestore } from 'lucide-react'
 
-const JobPortalCard = ({ job, onEdit, onToggleArchive }) => {
+const JobPortalCard = ({ job, onEdit, onToggleArchive, provided }) => {
   const { id, title, status, desc, location, type, amount } = job
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -29,7 +29,11 @@ const JobPortalCard = ({ job, onEdit, onToggleArchive }) => {
   }
 
   return (
-    <div className="flex flex-col gap-3 text-sm p-6 bg-blue rounded-2xl border-[0.01rem] border-[#343434ff]">
+    <div
+      ref={provided.innerRef}
+      {...provided.draggableProps}
+      className="flex flex-col gap-3 text-sm p-6 bg-blue rounded-2xl border-[0.01rem] border-[#343434ff]"
+    >
       <div className='flex items-center justify-between'>
         <div>
           <div>
@@ -38,7 +42,7 @@ const JobPortalCard = ({ job, onEdit, onToggleArchive }) => {
           </div>
         </div>
         <div className='flex gap-2'>
-          <div className='p-1 cursor-pointer hover:bg-[#1c1c1C] rounded-sm'><LayoutGrid /></div>
+          <div {...provided.dragHandleProps} className='p-1 cursor-grab hover:bg-[#1c1c1C] rounded-sm'><LayoutGrid /></div>
 
           <div className='relative' ref={menuRef}>
             <div onClick={() => setIsMenuOpen(!isMenuOpen)} className='p-1 cursor-pointer hover:bg-[#1c1c1C] rounded-sm'><EllipsisVertical /></div>
@@ -60,7 +64,6 @@ const JobPortalCard = ({ job, onEdit, onToggleArchive }) => {
               </div>
             )}
           </div>
-
         </div>
       </div >
       <div>{desc}</div>

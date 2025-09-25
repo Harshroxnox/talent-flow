@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient } from '../app/queryClient';
 import toast from 'react-hot-toast';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
-import { fetchJobs, createJob, updateJob } from '../api/jobs';
+import { fetchJobs, createJob, updateJob, reorderJob } from '../api/jobs';
 
 import createJobImg from "../assets/jobs1.webp"
 import teamPlanImg from "../assets/jobs2.jpg"
@@ -24,7 +25,7 @@ const JobsListing = () => {
   const [sort, setSort] = useState('order')        // e.g., 'title', 'order'
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(6)
-  
+
   // ---- Modal State ----
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingJob, setEditingJob] = useState(null); // null for create, job object for edit
@@ -54,9 +55,9 @@ const JobsListing = () => {
 
   // ---- React Query Mutation for Archiving/Unarchiving a Job ----
   const { mutate: toggleArchiveJob } = useMutation({
-    mutationFn: (job) => updateJob({ 
-      id: job.id, 
-      status: job.status === 'active' ? 'archived' : 'active' 
+    mutationFn: (job) => updateJob({
+      id: job.id,
+      status: job.status === 'active' ? 'archived' : 'active'
     }),
     onSuccess: (_, variables) => {
       const action = variables.status === 'active' ? 'Archived' : 'Unarchived';
@@ -66,6 +67,18 @@ const JobsListing = () => {
     onError: (error, variables) => {
       const action = variables.status === 'active' ? 'Archive' : 'Unarchive';
       toast.error(`Failed to ${action.toLowerCase()} job. Please try again.`);
+    },
+  });
+
+  // ---- React Query Mutation for Reordering Jobs ----
+  const { mutate: reorderJobMutation } = useMutation({
+    mutationFn: reorderJob,
+    onSuccess: () => {
+      toast.success('Job order updated successfully!');
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+    },
+    onError: () => {
+      toast.error('Failed to update job order.');
     },
   });
 
@@ -80,6 +93,23 @@ const JobsListing = () => {
     setIsModalOpen(true);
   };
 
+  const onDragEnd = (result) => {
+    if (!result.destination) {
+      return;
+    }
+
+    const { source, destination, draggableId } = result;
+
+    if (source.index === destination.index) {
+      return;
+    }
+
+    reorderJobMutation({
+      id: draggableId,
+      fromOrder: source.index,
+      toOrder: destination.index,
+    });
+  };
 
   return (<>
   <div className='flex h-screen text-[1.1rem]'>
@@ -115,30 +145,42 @@ const JobsListing = () => {
         sort={sort} setSort={setSort}
       />
 
-
       {isFetching ? (
         <div className="flex justify-center items-center h-64">
           <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
-      ):(
-        <div className='grid grid-cols-3 gap-5'>
-          {
-            data && data.data && data.data.map((job) => (
-              <JobPortalCard
-                key={job.id}
-                job={job}
-                onEdit={handleOpenEditModal}
-                onToggleArchive={toggleArchiveJob}
-              />
-            ))
-          }
-        </div>
+      ) : (
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="jobs">
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className='grid grid-cols-3 gap-5'
+              >
+                {data?.data?.map((job, index) => (
+                  <Draggable key={job.id} draggableId={job.id.toString()} index={index}>
+                    {(provided) => (
+                      <JobPortalCard
+                        job={job}
+                        onEdit={handleOpenEditModal}
+                        onToggleArchive={toggleArchiveJob}
+                        provided={provided}
+                      />
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       )}
 
       {
         !isFetching && data && (
           <div className='flex items-center justify-center pb-5'>
-            <Pagination 
+            <Pagination
               page={page} setPage={setPage}
               pageSize={pageSize} setPageSize={setPageSize}
               totalItems={data.total}
@@ -150,14 +192,13 @@ const JobsListing = () => {
     </div>
   </div>
 
-  <JobFormModal 
+  <JobFormModal
     isOpen={isModalOpen}
     onClose={() => setIsModalOpen(false)}
     onSubmit={saveJob}
     isSubmitting={isSaving}
     jobToEdit={editingJob}
   />
-
   </>)
 }
 
