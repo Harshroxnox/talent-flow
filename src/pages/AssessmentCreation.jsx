@@ -1,12 +1,21 @@
-import Sidebar from '../components/Sidebar'
+import { useParams, useLocation } from 'react-router';
+import AssessmentBuilder from '../components/AssessmentBuilder';
+import Sidebar from '../components/Sidebar';
 
 const AssessmentCreation = () => {
-  return (
-  <div className='flex h-screen text-[1.1rem]'>
-    <Sidebar />
-    <div className='flex-1'>AssessmentCreation</div>
-  </div>
-  )
-}
+  const { jobId } = useParams();
+  const location = useLocation();
+  const jobPrefill = location?.state?.jobPrefill;
+  const effectiveJobId = jobId || jobPrefill || null;
 
-export default AssessmentCreation
+  return (
+    <div className="flex h-screen">
+      <Sidebar />
+      <div className="flex-1 ml-61">
+        <AssessmentBuilder jobId={effectiveJobId} />
+      </div>
+    </div>
+  );
+};
+
+export default AssessmentCreation;

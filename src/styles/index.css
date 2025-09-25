@@ -1,3 +1,48 @@
+/* Custom Scrollbar Styles - applies globally */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: var(--color-blue, #232946);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--color-primary, #eebbc3) 0%, var(--color-accent, #b8c1ec) 100%);
+  border-radius: 8px;
+  min-height: 40px;
+  border: 2px solid var(--color-background, #121629);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--color-accent, #b8c1ec) 0%, var(--color-primary, #eebbc3) 100%);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--color-background, #121629);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary, #eebbc3) var(--color-blue, #232946);
+}
+
+/* Custom checkbox animation */
+.custom-checkbox-container {
+  position: relative;
+}
+
+.custom-checkbox-check {
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.custom-checkbox-check.checked {
+  opacity: 1;
+  transform: scale(1);
+}
+
 @import "tailwindcss";
 
 @theme {
@@ -26,4 +71,13 @@
   font-family: var(--font-inter);
   font-size: 1.2rem;
   font-weight: 300;
+}
+
+/* Utility classes */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

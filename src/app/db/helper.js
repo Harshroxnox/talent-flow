@@ -40,8 +40,6 @@ export const randomTags = () => {
   return [...out];
 }
 
-// --- New Helper Functions ---
-
 export const randomPhoneNumber = () => {
     return `+91 9${randInt(10, 99)} ${randInt(100, 999)} ${randInt(1000, 9999)}`;
 }

@@ -8,9 +8,11 @@ export const db = new Dexie('JobPortalDB');
 db.version(1).stores({
   jobs: '++id, title, status, order, slug',
   candidates: '++id, name, email, stage, jobId',
-  // Add a new 'notes' table
   notes: '++id, candidateId, text, createdAt', 
-  assessments: '++id, jobId, type',
+  assessments: '++id, jobId, type, title, createdAt, updatedAt',
+  assessmentDrafts: '++id, jobId, title, data, lastModified',
+  candidateResponses: '++id, assessmentId, candidateId, responses, isSubmitted, lastModified',
+  persistentState: 'key, value, timestamp', // for general state persistence
   submissions: '++id, jobId, candidateId, submittedAt',
   meta: 'key' // for storing e.g. seeded=true
 });
