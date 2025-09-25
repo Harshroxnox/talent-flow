@@ -311,24 +311,27 @@ const AssessmentPreviewForm = ({ assessment }) => {
           >
             ← Previous
           </button>
-          <span className="text-sm text-[var(--color-dark-grey)]">
-            {visibleQuestions.length} question{visibleQuestions.length !== 1 ? 's' : ''}
-          </span>
-          {isLastSection ? (
+
+          <button
+            onClick={handleNext}
+            disabled={isLastSection}
+            className="px-4 py-2 text-[var(--color-dark-grey)] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next →
+          </button>
+        </div>
+
+        {isLastSection && (
+          <div className="flex justify-center mt-4">
             <BtnWhite
               label="Complete Assessment"
               onClick={handleNext}
               className="px-6 py-3"
             />
-          ) : (
-            <button
-              onClick={handleNext}
-              className="px-4 py-2 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] text-white rounded-lg hover:shadow-lg hover:shadow-pink-500/25 transition-all"
-            >
-              Next →
-            </button>
-          )}
-        </div>
+          </div>
+        )}
+
+
       </div>
     </div>
   );
@@ -1418,11 +1421,6 @@ const AssessmentBuilder = ({ jobId, existingAssessment }) => {
                                     placeholder={`Option ${optionIndex + 1}`}
                                     className="flex-1 p-2 bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg text-white placeholder-[var(--color-dark-grey)] focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
                                   />
-                                  <button className="p-1 text-[var(--color-dark-grey)] hover:text-white">
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                      <path d="M4 6h12v2H4V6zM4 10h12v2H4v-2zM4 14h12v2H4v-2z" />
-                                    </svg>
-                                  </button>
                                   <button
                                     onClick={() => removeQuestionOption(sectionIndex, questionIndex, optionIndex)}
                                     className="p-1 text-[var(--color-dark-grey)] hover:text-red-400"
@@ -1495,9 +1493,6 @@ const AssessmentBuilder = ({ jobId, existingAssessment }) => {
           <div className="p-6">
             <div className="flex items-center gap-3 mb-6">
               <h3 className="text-lg font-semibold text-white">Live Preview</h3>
-              <span className="text-sm text-[var(--color-dark-grey)] bg-[var(--color-blue)] px-2 py-1 rounded">
-                Candidate View
-              </span>
             </div>
 
             {assessment.title ? (
