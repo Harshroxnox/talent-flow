@@ -322,89 +322,51 @@ export const handlers = [
   // PUT /assessments/:jobId (for saving completed assessments)
   http.put('/assessments/:jobId', async ({ params, request }) => {
     await randomDelay()
-    console.log('🚀 PUT /assessments/:jobId handler called')
     try {
       maybeFail()
       const jobId = Number(params.jobId)
       const data = await request.json()
-      console.log('📊 Publishing data received:', data)
-
-      // Handle array of assessments
       const assessmentsToSave = Array.isArray(data) ? data : [data]
-      console.log('📋 Assessments to save:', assessmentsToSave.length)
-
-      // Add timestamps and jobId to each assessment
-      const timestampedAssessments = assessmentsToSave.map(assessment => ({
-        ...assessment,
-        jobId,
-        createdAt: assessment.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }))
 
       const results = []
-      for (const assessment of timestampedAssessments) {
-        console.log(`💾 Processing assessment ${assessment.id} for job ${jobId}`)
-        if (assessment.id) {
-          // Check if assessment exists
-          const existing = await db.assessments.get(assessment.id)
-          if (existing) {
-            // Update existing
-            await db.assessments.update(assessment.id, assessment)
-            const updated = await db.assessments.get(assessment.id)
-            results.push(updated)
-            console.log(`✏️ Updated existing assessment ${assessment.id}`)
-          } else {
-            // Add new assessment with existing ID
-            const id = await db.assessments.add(assessment)
-            const stored = await db.assessments.get(id)
-            results.push(stored)
-            console.log(`➕ Added new assessment ${assessment.id}`)
-          }
+      for (const assessment of assessmentsToSave) {
+        // Create a clean version of the assessment for publishing
+        const publishedAssessment = { ...assessment };
+        delete publishedAssessment.isDraft; // <- FIX: Remove isDraft property
+        delete publishedAssessment.draftTableId;
+        
+        publishedAssessment.jobId = jobId;
+        publishedAssessment.updatedAt = new Date().toISOString();
+        if (!publishedAssessment.createdAt) {
+          publishedAssessment.createdAt = new Date().toISOString();
+        }
 
-          // IMPORTANT: Remove from drafts table if it exists there
-          // This handles draft-to-published transitions
-          console.log(`🔍 Looking for draft to delete for assessment ${assessment.id} in job ${jobId}`)
+        // Use put to handle both create and update seamlessly
+        const newId = await db.assessments.put(publishedAssessment);
+        const stored = await db.assessments.get(newId);
+        results.push(stored);
 
-          const existingDraft = await db.assessmentDrafts
-            .where('jobId')
-            .equals(jobId)
-            .and(draft => {
-              try {
-                const parsed = JSON.parse(draft.data)
-                const matches = parsed.id === assessment.id
-                console.log(`🔍 Checking draft ${draft.id}: parsed.id=${parsed.id}, assessment.id=${assessment.id}, matches=${matches}`)
-                return matches
-              } catch (err) {
-                console.log(`❌ Error parsing draft ${draft.id}:`, err)
-                return false
-              }
-            })
-            .first()
-
-          if (existingDraft) {
-            console.log(`🗑️ Deleting draft ${existingDraft.id} for published assessment ${assessment.id}`)
-            await db.assessmentDrafts.delete(existingDraft.id)
-            console.log(`✅ Removed draft ${existingDraft.id} for published assessment ${assessment.id}`)
-
-            // Verify deletion
-            const verifyDeleted = await db.assessmentDrafts.get(existingDraft.id)
-            console.log(`🔍 Verification - draft ${existingDraft.id} exists after deletion:`, !!verifyDeleted)
-          } else {
-            console.log(`ℹ️  No existing draft found for assessment ${assessment.id} in job ${jobId}`)
-          }
-        } else {
-          // Add new assessment without ID
-          const id = await db.assessments.add(assessment)
-          const stored = await db.assessments.get(id)
-          results.push(stored)
-          console.log(`➕ Added new assessment without ID, got ID ${id}`)
+        // Now, find and delete the original draft
+        if (assessment.isDraft) {
+            const draftToDelete = await db.assessmentDrafts
+              .where('jobId').equals(jobId)
+              .and(draft => {
+                  try {
+                      const parsedData = JSON.parse(draft.data);
+                      return parsedData.id === assessment.id;
+                  } catch {
+                      return false;
+                  }
+              }).first();
+            
+            if (draftToDelete) {
+                await db.assessmentDrafts.delete(draftToDelete.id);
+            }
         }
       }
 
-      console.log('🎯 Final results to return:', results)
       return HttpResponse.json(results)
     } catch (err) {
-      console.error('❌ Error in PUT /assessments/:jobId:', err)
       return HttpResponse.json({ message: err.message }, { status: 500 })
     }
   }),
